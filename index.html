@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <!-- aos css cdn -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f4f8;
+
+
+    }
+</style>
+
+<body>
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="card w-lg-50 shadow-lg p-4 rounded-4">
+            <p class="text-center text-primary fs-1 fw-bold">Loan Affordability Checker</p>
+            <p class="text-muted text-center fw-normal ">Calculate your monthly payment and check your affordability
+                status.</p>
+            <div class=" w-100 mt-3">
+                <p class="text-muted fw-bold m-0">Loan Amount ($)</p>
+                <input type="text" class="form-control" placeholder="50000" aria-label="Recipient’s username"
+                    aria-describedby="basic-addon2" id="loanAmount">
+            </div>
+            <div class="d-lg-flex mt-4 justify-content-evenly">
+                <div class="w-lg-50">
+                    <p class="text-muted fw-bold m-0">Annual Interest Rate (%)</p>
+                    <input type="number" class="form-control" placeholder="E.g 5.5" aria-label="Recipient’s username"
+                        aria-describedby="basic-addon2" id="anualRate">
+                </div>
+                <div class="w-lg-50">
+                    <p class="text-muted fw-bold m-0">Loan Term (Years)</p>
+                    <input type="number" class="form-control" placeholder="E.g 15" aria-label="Recipient’s username"
+                        aria-describedby="basic-addon2" id="loanTerms">
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary mt-4" onclick="paymentCaculator()">Calculate
+                Payment</button>
+            <div class="bg-light mt-4 p-4 rounded-4">
+                <p class="text-center fw-bold fs-4">Calculation Results</p>
+                <p class="fw-bold">Monthly Payment: <span id="monthlyPay">__</span></p>
+                <p class="fw-bold">Total Interest Paid: <span id="totalPayment">__</span></p>
+                <div class="w-100 text-center " id="eligabilityResult">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- <h1>JS bootstrap cdn</h1> -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
+        integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
+        crossorigin="anonymous"></script>
+    <!--aos js sdn  -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+    <script>
+        const paymentCaculator = () => {
+            let principalValue = document.getElementById('loanAmount').value
+            let rateValue = document.getElementById('anualRate').value
+            let loanDurationValue = document.getElementById('loanTerms').value
+            let convertedPrincipalValue = Number(principalValue)
+            let convertedRateValue = Number(rateValue)
+            let convertedLoanDurationValue = Number(loanDurationValue)
+
+            let monthlyRate = convertedRateValue / 100 / 12
+            let paymentNumbeer = convertedLoanDurationValue * 12
+            let termFactor = (1 + monthlyRate) ** paymentNumbeer
+            let monthlyPayment = (convertedPrincipalValue * (monthlyRate * termFactor)) / (termFactor - 1)
+            let totalPaid = ((monthlyPayment * paymentNumbeer) - convertedPrincipalValue)
+            if (convertedPrincipalValue == '' && convertedRateValue == '' && loanDurationValue == '') {
+                alert("Enter The Necessary Detail")
+                // console.log(principalValue);
+
+            } 
+            if (convertedPrincipalValue <= 0 || convertedRateValue < 0 || convertedLoanDurationValue <= 0) {
+                eligabilityResult.innerHTML = '<P style = "background-color: orange; color: black; padding:2%;">ERROR: Loan Amount and Term must be positive. Rate cannot be negative.</p>';
+                monthlyPay.innerHTML = '';
+                totalPayment.innerHTML = '';
+                return; 
+            }
+            else if (monthlyPayment > (convertedPrincipalValue * 0.03)) {
+                monthlyPay.innerHTML = `$${monthlyPayment.toFixed(2)}`
+                totalPayment.innerHTML = `$${totalPaid.toFixed(2)}`
+                eligabilityResult.innerHTML = '<P style = "background-color: red; color: white; padding:2%; "> Status: HIGH RISK. Payment is too high relative to the loan size.</p>';
+
+            } // ONLY check the 2% threshold. The 3% threshold is handled by the 'if' block above.
+            else if (monthlyPayment > (convertedPrincipalValue * 0.02)) {
+                monthlyPay.innerHTML = `$${monthlyPayment.toFixed(2)}`
+                totalPayment.innerHTML = `$${totalPaid.toFixed(2)}`
+                eligabilityResult.innerHTML = '<P style = "background-color: yellow; color: dark; padding:2%; "> Status: ACCEPTABLE. Payment is within standard guidelines.</p>';
+
+            } else {
+                monthlyPay.innerHTML = `$${monthlyPayment.toFixed(2)}`
+                totalPayment.innerHTML = `$${totalPaid.toFixed(2)}`
+                eligabilityResult.innerHTML = '<P style = "background-color: green; color: white; padding:2%; "> Status: EXCELLENT. This loan is highly affordable.</p>';
+
+            }
+
+        }
+    </script>
+</body>
+
+</html>
