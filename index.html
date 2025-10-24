@@ -23,13 +23,13 @@
 
 <body>
     <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
-        <div class="card w-lg-50 shadow-lg p-4 rounded-4">
+        <div class="card w-lg-50 shadow-lg p-4 rounded-4" data-aos="fade-down" data-aos-duration="2000">
             <p class="text-center text-primary fs-1 fw-bold">Loan Affordability Checker</p>
             <p class="text-muted text-center fw-normal ">Calculate your monthly payment and check your affordability
                 status.</p>
             <div class=" w-100 mt-3">
-                <p class="text-muted fw-bold m-0">Loan Amount ($)</p>
-                <input type="text" class="form-control" placeholder="50000" aria-label="Recipient’s username"
+                <p class="text-muted fw-bold m-0">Loan Amount (₦)</p>
+                <input type="number" class="form-control" placeholder="50000" aria-label="Recipient’s username"
                     aria-describedby="basic-addon2" id="loanAmount">
             </div>
             <div class="d-lg-flex mt-4 justify-content-evenly">
@@ -88,27 +88,27 @@
                 alert("Enter The Necessary Detail")
                 // console.log(principalValue);
 
-            } 
-            if (convertedPrincipalValue <= 0 || convertedRateValue < 0 || convertedLoanDurationValue <= 0) {
+            }
+            else if (convertedPrincipalValue <= 0 || convertedRateValue < 0 || convertedLoanDurationValue <= 0) {
                 eligabilityResult.innerHTML = '<P style = "background-color: orange; color: black; padding:2%;">ERROR: Loan Amount and Term must be positive. Rate cannot be negative.</p>';
                 monthlyPay.innerHTML = '';
                 totalPayment.innerHTML = '';
-                return; 
+                return;
             }
             else if (monthlyPayment > (convertedPrincipalValue * 0.03)) {
-                monthlyPay.innerHTML = `$${monthlyPayment.toFixed(2)}`
-                totalPayment.innerHTML = `$${totalPaid.toFixed(2)}`
+                monthlyPay.innerHTML = `₦${monthlyPayment.toFixed(2)}`
+                totalPayment.innerHTML = `₦${totalPaid.toFixed(2)}`
                 eligabilityResult.innerHTML = '<P style = "background-color: red; color: white; padding:2%; "> Status: HIGH RISK. Payment is too high relative to the loan size.</p>';
 
             } // ONLY check the 2% threshold. The 3% threshold is handled by the 'if' block above.
             else if (monthlyPayment > (convertedPrincipalValue * 0.02)) {
-                monthlyPay.innerHTML = `$${monthlyPayment.toFixed(2)}`
-                totalPayment.innerHTML = `$${totalPaid.toFixed(2)}`
+                monthlyPay.innerHTML = `₦${monthlyPayment.toFixed(2)}`
+                totalPayment.innerHTML = `₦${totalPaid.toFixed(2)}`
                 eligabilityResult.innerHTML = '<P style = "background-color: yellow; color: dark; padding:2%; "> Status: ACCEPTABLE. Payment is within standard guidelines.</p>';
 
             } else {
-                monthlyPay.innerHTML = `$${monthlyPayment.toFixed(2)}`
-                totalPayment.innerHTML = `$${totalPaid.toFixed(2)}`
+                monthlyPay.innerHTML = `₦${monthlyPayment.toFixed(2)}`
+                totalPayment.innerHTML = `₦${totalPaid.toFixed(2)}`
                 eligabilityResult.innerHTML = '<P style = "background-color: green; color: white; padding:2%; "> Status: EXCELLENT. This loan is highly affordable.</p>';
 
             }
